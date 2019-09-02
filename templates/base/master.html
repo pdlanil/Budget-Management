@@ -1,0 +1,132 @@
+<!DOCTYPE html>{%load staticfiles%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block 'title'%} {%endblock%}</title>
+    <link rel="stylesheet" href="{%static 'css/bootstrap.min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'dashboard' %}">Budget Management</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+
+      <ul class="nav navbar-nav navbar-right">
+
+
+<!--        <button type="button" class="btn btn-default navbar-btn" onclick="location.href='{%url 'signup'%}';">Signup</button>-->
+<!--          <button type="button" class="btn btn-default navbar-btn" onclick="location.href='{%url 'signin'%}';">Signin</button>-->
+          <ul class="nav navbar-nav navbar-right">
+              {% if request.user.is_authenticated %}
+              <li ><a href="{% url 'logout' %}" >LogOut</a> </li>
+              {% else %}
+              <li ><a href="{% url 'signup' %}" >SignUp</a> </li>
+              <li ><a href="{% url 'signin' %}" >LogIn</a> </li>
+              {% endif %}
+
+          </ul>
+
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+{% block 'content' %}
+
+
+{% endblock %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'bootbox/bootbox.min.js' %}"></script>
+<script src="{% static 'bootbox/bootbox.locales.min.js' %}"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    function delete_(url){
+     bootbox.confirm("are you sure?",function(result){
+        if(result)
+            window.location.href=url
+       });
+
+    }
+</script>
+
+
+<!--pie chart for expense-->
+ <script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Task', 'Expenses by Category'],
+  {% for x,y in expdata %}
+  ['{{x}}',{{y}}],
+
+  {% endfor %}
+]);
+  var options = {'title':'Expenses', 'width':300, 'height':200};
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script>
+
+
+<!--Yearly Expense piechart -->
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+// Draw the cha
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Task', 'Yearly Expense'],
+  {% for x,y in expyeardata %}
+  ['{{x}}',{{y}}],
+
+  {% endfor %}
+]);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'title':' Expense Yearly', 'width':300, 'height':200};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechartyearlyexpense'));
+  chart.draw(data, options);
+}
+</script>
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+// Draw the cha
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Task', 'Saving'],
+  {% for x,y in saving %}
+  ['{{x}}',{{y}}],
+
+  {% endfor %}
+]);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'title':' Expense-Income', 'width':300, 'height':200};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('saving'));
+  chart.draw(data, options);
+}
+</script>
+
+</body>
+</html>
